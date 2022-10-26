@@ -9,7 +9,13 @@ main()
   .catch((err) => console.log(err));
 
 async function main() {
-  await mongoose.connect("mongodb://root:root@localhost:27017/node_api");
+  await mongoose
+    .connect('mongodb://database:27017/node_api', {
+      useNewUrlParser: true
+    })
+    .then((result) => console.log('MongoDB Conectado')
+    )
+    .catch((error) => console.log(error));
 }
 
 app.use(bodyParser.json());

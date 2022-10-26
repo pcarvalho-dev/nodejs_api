@@ -2,24 +2,21 @@ version: '3.4'
 
 services:
   api:
-    image: api
-    build:
-      context: .
-      dockerfile: ./Dockerfile
+    build: .
+    # volumes:
+    #   - ./:/node-app
+    #   - ./node_modules:/node-app/node_modules
     environment:
       NODE_ENV: development
+    depends_on:
+      - database
+    links:
+      - database
     ports:
       - 8080:8080
-    restart: always
-    depends_on:
-      - mongodb
-  mongodb:
+  database:
     image: mongo
-    restart: always
-    volumes:
-      - ~/apps/mongo:/data/db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
+    # volumes:
+    #   - ./data/db:/data/db
     ports:
-    - 27017:27017
+      - 27017:27017
