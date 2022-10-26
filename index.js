@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const todoRoutes = require("./src/routes/todo");
+const userRoutes = require("./src/routes/user");
 
 main()
   .then((res) => console.log(res))
@@ -25,7 +25,7 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.use("/api/todos", todoRoutes);
+app.use("/api/user", userRoutes);
 
 app.listen(8080, () => {
   console.log("listening on port 8080");
