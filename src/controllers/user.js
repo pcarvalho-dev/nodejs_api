@@ -1,13 +1,21 @@
+const { response } = require("express");
 const User = require("../models/user");
 
 exports.createUser = (request, response, next) => {
   const user = new User({
     name: request.body.name,
     email: request.body.email,
-    password: request.body.password,
     phone_number: request.body.phone_number,
     document: request.body.document,
   });
+  User.findOne({ email: request.body.email }, (error, user) => {
+    if (user != null) {
+      return response.status(400).send({
+        message: "Email already registered in the system.",
+      });
+    }
+  });
+  user.setPassword(request.body.password);
   user
     .save()
     .then((result) => {
@@ -35,21 +43,43 @@ exports.getUsers = (request, response, next) => {
   const currPage = +request.query.page;
   const userQuery = User.find();
   let fetchedUser;
+  let formatedUsers = [];
   if (pageSize && currPage) {
     userQuery.skip(pageSize * (currPage - 1)).limit(pageSize);
   }
   userQuery
-    .then((doc) => {
-      fetchedUser = doc;
+    .then((result) => {
+      fetchedUser = result;
+      for (let user in fetchedUser) {
+        console.log(user);
+      }
       return User.countDocuments();
     })
     .then((count) => {
-      response
-        .status(200)
-        .json({
-          message: "All items fetched 200",
-          posts: fetchedUser,
-          maxPosts: count,
-        });
+      response.status(200).json({
+        message: "All items fetched 200",
+        data: formatedUsers,
+        maxPosts: count,
+      });
     });
+};
+
+exports.loginUser = (request, response, next) => {
+  User.findOne({ email: request.body.email }, (err, user) => {
+    if (user === null) {
+      return response.status(404).send({
+        message: "User not found.",
+      });
+    } else {
+      if (user.validPassword(request.body.password)) {
+        return response.status(201).send({
+          message: "User Logged In",
+        });
+      } else {
+        return response.status(400).send({
+          message: "Wrong Password",
+        });
+      }
+    }
+  });
 };
