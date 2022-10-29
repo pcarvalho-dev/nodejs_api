@@ -25,7 +25,7 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.use("/api/user", userRoutes);
+app.use("/api/users", userRoutes);
 
 app.listen(8080, () => {
   console.log("listening on port 8080");
