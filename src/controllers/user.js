@@ -83,3 +83,24 @@ exports.loginUser = (request, response, next) => {
     }
   });
 };
+
+exports.getById = (request, response, next) => {
+  User.findById(request.query.id, (err, result) => {
+    if (result === null) {
+      return response.status(404).send({
+        message: "User not found!",
+      });
+    } else {
+      response.status(200).send({
+        message: "User fetched succesfully.",
+        data: {
+          id: result._id,
+          name: result._doc.name,
+          email: result._doc.email,
+          phone_number: result._doc.phone_number,
+          document: result._doc.document,
+        }
+      });
+    }
+  });
+};
