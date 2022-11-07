@@ -48,7 +48,7 @@ exports.getUsers = (request, response, next) => {
   }
   userQuery.then((users) => {
     response.status(200).json({
-      message: "All items fetched 200",
+      message: "All users fetched 200",
       data: users,
       maxPosts: users.length,
     });
@@ -77,9 +77,16 @@ exports.getById = (request, response, next) => {
 };
 
 exports.deleteUser = (request, response, next) => {
-  User.deleteOne({ id: request.params.id }).then((response) => {
-    response.status(200).send({
-      message: `User deleted!`,
+  User.deleteOne({ id: request.params.id })
+    .then((response) => {
+      response.status(200).send({
+        message: `User deleted!`,
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+      response.status(500).json({
+        message: "Fail to delete user",
+      });
     });
-  });
 };
